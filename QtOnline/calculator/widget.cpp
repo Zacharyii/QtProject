@@ -138,23 +138,28 @@ void Widget::on_delButton_clicked()
 
 void Widget::on_equButton_clicked()
 {
+    //声明并初始化了两个栈：s_num 用于存储数字，s_opt 用于存储操作符。
     QStack<int> s_num, s_opt;
 
     char opt[128] = {0};
     int i=0, tmp=0, num1, num2;
 
     //把QString转换成char *
-    QByteArray ba;
+    QByteArray ba;                  //将字符串 expression 追加到 QByteArray 对象 ba
     ba.append(expression);      //把QString转换成QByteArray
     strcpy(opt, ba.data());        //data可以把QByteArray转换成const char *
 
+    //遍历字符数组 opt，直到遇到字符串结束符 '\0' 或者 s_opt 栈为空。
     while(opt[i]!='\0' || s_opt.empty()!=true)
     {
+        //如果当前字符是数字，则将其转换成整数，并将其推入 s_num 栈中。
         if(opt[i] >='0' && opt[i]<='9')
         {
             tmp = tmp*10+opt[i]-'0';
             i++;
-            if(opt[i]<'0'||opt[i]>'9')
+            //如果下一个字符不是数字，则说明当前数字已经结束，
+            //将其压入 s_num 栈后，将临时变量 tmp 重置为 0
+            if(opt[i]<'0' || opt[i]>'9')
             {
                 s_num.push(tmp);
                 tmp=0;
@@ -162,6 +167,9 @@ void Widget::on_equButton_clicked()
         }
         else           //操作符
         {
+            //如果 s_opt 栈为空，或者当前操作符的优先级高于栈顶操作符的优先级，
+            //或者栈顶操作符为左括号 '('，而当前操作符不是右括号 ')'，
+            //则将当前操作符压入 s_opt 栈中，并继续下一个字符的处理。
             if (s_opt.empty() == true || Priority(opt[i]) > Priority(s_opt.top()) ||
                     (s_opt.top() == '(' && opt[i] != ')'))
             {
@@ -170,6 +178,8 @@ void Widget::on_equButton_clicked()
                 continue;
             }
 
+            //如果栈顶操作符为左括号 '('，且当前操作符为右括号 ')'，
+            //则将栈顶操作符弹出，并继续下一个字符的处理。
             if (s_opt.top() == '(' && opt[i] == ')')
             {
                 s_opt.pop();
@@ -177,6 +187,9 @@ void Widget::on_equButton_clicked()
                 continue;
                 }
 
+            //如果当前操作符的优先级小于等于栈顶操作符的优先级，或者当前操作符为右括号 ')'，
+            //而栈顶操作符不是左括号 '('，或者当前字符已经是字符串结束符 '\0'，
+            //而栈不为空，则执行计算逻辑。
             if (Priority(opt[i]) <= Priority(s_opt.top()) || (opt[i] == ')' && s_opt.top() != '(') ||
                             (opt[i] == '\0' && s_opt.empty() != true))
             {
@@ -217,10 +230,12 @@ void Widget::on_equButton_clicked()
             }
         }
     }
+    //将计算结果（栈顶元素）转换为字符串，并将其设置为 mainLineEdit 的文本。
     ui->mainLineEdit->setText(QString::number(s_num.top()));
     expression.clear();
 }
 
+//优先级值越高的操作符优先级越高。
 int Widget::Priority(char ch)
 {
     switch(ch)

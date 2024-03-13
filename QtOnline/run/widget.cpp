@@ -38,3 +38,9 @@ void Widget::on_cancelButton_clicked()
 {
     this->close();
 }
+
+void Widget::on_oneButton_clicked()
+{
+    expression += "1";\
+    ui->mainLineEdit->setText(expression);
+}

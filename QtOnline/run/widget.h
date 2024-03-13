@@ -21,8 +21,11 @@ private slots:
     void on_commitButton_clicked();
     void on_cancelButton_clicked();
 
+    void on_oneButton_clicked();
+
 private:
     Ui::Widget *ui;
+    QString expression;
 };
 
 #endif // WIDGET_H

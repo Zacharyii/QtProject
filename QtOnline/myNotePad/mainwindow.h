@@ -5,6 +5,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDebug>
+#include <QKeyEvent>
+#include <QMouseEvent>
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +19,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void keyPressEvent(QKeyEvent *k);
+    void mousePressEvent(QMouseEvent *m);
 
 private slots:
     void newActionSlot();   //槽函数
